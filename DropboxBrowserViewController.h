@@ -40,7 +40,11 @@
     #import <QuartzCore/QuartzCore.h>
 #endif
 
-#import <DropboxSDK/DropboxSDK.h>
+#ifndef COCOAPODS
+    #import <DropboxSDK/DropboxSDK.h>
+#else
+    #import <Dropbox_iOS_SDK_Source/DropboxSDK.h>
+#endif
 
 // Ensure that the build is for iOS 6.0 or higher
 #ifndef __IPHONE_6_0

@@ -45,6 +45,8 @@ static NSUInteger const kDBSignOutAlertViewTag = 3;
 
 @property (nonatomic, strong, readwrite) UIProgressView *downloadProgressView;
 
+@property (nonatomic, strong, readwrite) NSBundle *imageBundle;
+
 @property (nonatomic, strong, readwrite) NSString *currentFileName;
 @property (nonatomic, strong, readwrite) NSString *currentPath;
 
@@ -79,12 +81,12 @@ static NSUInteger const kDBSignOutAlertViewTag = 3;
 #pragma mark  - View Lifecycle
 
 - (instancetype)init {
-	self = [super init];
-	if (self)  {
+    self = [super init];
+    if (self)  {
         // Custom initialization
         [self basicSetup];
-	}
-	return self;
+    }
+    return self;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
@@ -99,6 +101,11 @@ static NSUInteger const kDBSignOutAlertViewTag = 3;
 - (void)basicSetup {
     _currentPath = @"/";
     _isLocalFileOverwritten = NO;
+
+    // Get image bundle
+    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    NSURL *url = [bundle URLForResource:@"DropboxMedia" withExtension:@"bundle"];
+    _imageBundle = [NSBundle bundleWithURL:url];
 }
 
 - (void)viewDidLoad {
@@ -183,7 +190,7 @@ static NSUInteger const kDBSignOutAlertViewTag = 3;
     else if ([self.fileList count] == 0) {
         // if there are no files, try updating content as the user may be logged in now
         [self updateContent];
-	}
+    }
 }
 
 - (void)logoutOfDropbox {
@@ -245,9 +252,9 @@ static NSUInteger const kDBSignOutAlertViewTag = 3;
         // Setup the cell file name
         cell.textLabel.text = file.filename;
         [cell.textLabel setNeedsDisplay];
-        
+
         // Display icon
-        cell.imageView.image = [UIImage imageNamed:file.icon];
+        cell.imageView.image = [UIImage imageWithContentsOfFile:[_imageBundle pathForResource:file.icon ofType:@"png"]];
         
         // Setup Last Modified Date
         NSLocale *locale = [NSLocale currentLocale];
